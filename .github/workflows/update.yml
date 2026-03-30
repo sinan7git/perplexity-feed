@@ -1,0 +1,33 @@
+name: Update Tech Feed
+
+on:
+  schedule:
+    - cron: '0 */3 * * *'   
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+
+      - name: Install deps
+        run: npm install
+
+      - name: Run script
+        run: node index.js
+
+      - name: Commit changes
+        run: |
+          git config user.name "bot"
+          git config user.email "bot@example.com"
+          git add data.json
+          git commit -m "update feed" || echo "no changes"
+          git push
